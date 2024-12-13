@@ -1,0 +1,38 @@
+---
+- name: Actualizar el sistema
+  apt:
+    update_cache: yes
+
+- name: Instalar dependencias necesarias
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Agregar llave GPG de Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Agregar repositorio de Docker
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Instalar Docker y Docker Compose
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+
+- name: Habilitar e iniciar el servicio Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
